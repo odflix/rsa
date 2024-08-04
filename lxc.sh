@@ -30,7 +30,6 @@ function catch_errors() {
 # Default Settings
 function default_settings() {
   CT_TYPE="1"
-  PW=""
   CT_ID=$NEXTID
   HN=$NSAPP
   DISK_SIZE="$var_disk"
@@ -56,7 +55,6 @@ function default_settings() {
 function echo_default() {
   echo -e "${GREEN}Default settings:${NC}"
   echo -e "  CT_TYPE: $CT_TYPE"
-  echo -e "  PW: $PW"
   echo -e "  CT_ID: $CT_ID"
   echo -e "  HN: $HN"
   echo -e "  DISK_SIZE: $DISK_SIZE"
@@ -80,7 +78,7 @@ function echo_default() {
 # Create LXC Container
 function create_lxc() {
   echo -e "${YELLOW}Creating LXC container with ID $CT_ID...${NC}"
-  # Command to create the LXC container
+  # Command to create the LXC container without password
   pct create $CT_ID local:vztmpl/debian-$var_version-standard_12.0-1_amd64.tar.gz \
     -hostname $HN \
     -storage local-lvm \
@@ -88,7 +86,6 @@ function create_lxc() {
     -cores $CORE_COUNT \
     -memory $RAM_SIZE \
     -net0 name=eth0,bridge=$BRG,ip=$NET \
-    --password $PW \
     --features nesting=1 \
     --ostype $var_os
   catch_errors
