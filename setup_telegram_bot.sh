@@ -5,6 +5,7 @@ TELEGRAM_BOT_TOKEN="5614449969:AAHyTMl-vt1jLoQ4uKifU0F656NHRTFwYSE"
 NGROK_API_KEY="2kBcjD0HAI3PMzEtmHP2XNHIzz3_5w537UjyRkqFF6CGGAXg9"
 PYTHON_SCRIPT_PATH="/opt/telegram_bot.py"
 SYSTEMD_SERVICE_PATH="/etc/systemd/system/telegram_bot.service"
+VENV_PATH="/opt/telegram_bot_venv"
 
 function header_info {
   clear
@@ -24,8 +25,16 @@ echo -e "Loading..."
 function install_packages() {
   echo "Installing necessary packages..."
   apt-get update
-  apt-get install -y python3 python3-pip curl
-  pip3 install python-telegram-bot psutil requests
+  apt-get install -y python3 python3-venv curl
+}
+
+# Create a virtual environment and install Python packages
+function setup_virtualenv() {
+  echo "Creating virtual environment..."
+  python3 -m venv $VENV_PATH
+  source $VENV_PATH/bin/activate
+  pip install python-telegram-bot psutil requests
+  deactivate
 }
 
 # Create the Python script for the Telegram bot
@@ -112,7 +121,7 @@ Description=Telegram Bot for Proxmox
 After=network.target
 
 [Service]
-ExecStart=/usr/bin/python3 $PYTHON_SCRIPT_PATH
+ExecStart=$VENV_PATH/bin/python $PYTHON_SCRIPT_PATH
 Restart=always
 
 [Install]
@@ -127,6 +136,7 @@ EOF
 
 # Run all the functions
 install_packages
+setup_virtualenv
 create_python_script
 create_systemd_service
 
