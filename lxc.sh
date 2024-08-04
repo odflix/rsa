@@ -3,7 +3,7 @@
 # Header Info
 echo -e "Loading..."
 APP="ngrokrdp"
-var_disk="2G"
+var_disk="2"
 var_cpu="1"
 var_ram="512"
 var_os="debian"
